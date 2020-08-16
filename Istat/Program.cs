@@ -61,32 +61,22 @@ namespace Istat
                     return new IstatCsvOutput
                     {
                         AgeClass = g.Key.AgeClass,
-                        DateInSeconds = (int)(g.Key.Date - new DateTime(1970, 1, 1)).TotalSeconds,
+                        Date = g.Key.Date.ToShortDateString(),
                         RegionName = g.Key.RegionName,
                         TotalDeaths = g.Sum(r => r.Deaths)
                     };
                 })
                 .Where(r => r.TotalDeaths != 0)
                 .OrderBy(r => r.AgeClass)
-                .OrderBy(r => r.DateInSeconds);
+                .OrderBy(r => r.Date);
 
-            // Ouput by region
-            var outputByRegion = output.GroupBy(r => r.RegionName);
+            // Ouput
+            using var writer = new StreamWriter(Path.Combine(directory, "output.csv"));
+            using var csvOutput = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-            var outputDirectory = Directory.CreateDirectory(Path.Combine(directory, "output"));
-            foreach (var regionGroup in outputByRegion)
-            {
-                var fileName = $"{regionGroup.Key}.csv";
-                foreach (var invalidChar in Path.GetInvalidFileNameChars())
-                    fileName = fileName.Replace(invalidChar, '-');
+            csvOutput.WriteRecords(output);
 
-                using var writer = new StreamWriter(Path.Combine(outputDirectory.FullName, fileName));
-                using var csvOutput = new CsvWriter(writer, CultureInfo.InvariantCulture);
-                
-                csvOutput.WriteRecords(regionGroup);
-
-                writer.Flush();
-            }
+            writer.Flush();
         }
     }
 }
