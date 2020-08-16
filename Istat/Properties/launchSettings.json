@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Istat": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\mirko\\Desktop\\Dataset-decessi-comunali-giornalieri-e-tracciato-record_al30giugno\\comuni_giornaliero_30giugno.csv"
+    }
+  }
+}
