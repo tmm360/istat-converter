@@ -60,9 +60,8 @@ namespace Istat
 
                     return records;
                 })
-                .GroupBy(r => new { r.CityName, r.ProvinceName, r.RegionName, r.Date, r.AgeClass })
+                .GroupBy(r => new { r.ProvinceName, r.RegionName, Date = r.Date.ToString("yyyy/MM"), r.AgeClass })
                 .OrderBy(r => r.Key.AgeClass)
-                .OrderBy(r => r.Key.CityName)
                 .OrderBy(r => r.Key.ProvinceName)
                 .OrderBy(r => r.Key.RegionName)
                 .OrderBy(r => r.Key.Date)
@@ -97,10 +96,9 @@ namespace Istat
                     return new IstatCsvOutput
                     {
                         AgeClass = ageClass,
-                        Date = g.Key.Date.ToString("yyyy/MM/dd"),
+                        Date = g.Key.Date,
                         RegionName = g.Key.RegionName,
                         ProvinceName = g.Key.ProvinceName,
-                        CityName = g.Key.CityName,
                         FDeaths = g.Sum(r => r.FDeaths),
                         MDeaths = g.Sum(r => r.MDeaths)
                     };
